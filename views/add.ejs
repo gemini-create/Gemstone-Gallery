@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aadd Products-Admin Dashboard</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width , initial scale=1">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+            
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+       html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1rem;
+            background-color: #F5F5F5;
+            
+        }
+           
+        .sidebar {
+            background-color: #1E2A38;
+            height: 100vh;
+            width: 250px;
+            padding: 20px;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar h2 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li span {
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ccc;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #0d6efd;
+        }
+
+        main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+        
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            main {
+                margin-left: 0;
+                
+            }
+        }
+        .store-logo {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid white;
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            }
+       </style>
+</head>
+
+<body>
+    <div class="sidebar navbar ">
+        <div class="text-center mb-2">
+            <h2>Hey! <%=user.username%></h2>
+            <img src="gem1.jpg" alt="Store Logo" class="store-logo " />
+        </div>
+       
+        <ul class="mainList">
+            <li><a  href="/admin"><i class="fa-solid fa-chart-line me-2"></i>Dashboard</a></li> 
+            <li><span>Products</span></li>
+
+                <ul class="innerList">
+                    <li ><a href="/add"><i class="fa-solid fa-plus px-3"></i>Add Products</a></li>
+                    <li ><a href="view"><i class="fa-solid fa-boxes-stacked px-3"></i>View Products</a></li>
+                    <li ><a href="/view"><i class="fa-solid fa-pen-to-square px-3"></i>Update Products</a></li>
+                    <li ><a href="/view"><i class="fa-solid fa-trash px-3"></i>Delete Products</a></li>
+               </ul>
+
+            <li><span>Customers</span></li>
+                <ul class="innerList">
+                    <li ><a href="viewCustomers" ><i class="fa-solid fa-boxes-stacked px-3"></i>View Customers</a></li>
+                </ul>
+
+            <li><span>Orders</span></li>
+                <ul class="innerList">
+                    <li ><a href="viewOrders" ><i class="fa-solid fa-boxes-stacked px-3"></i>View Orders</a></li>
+                </ul>
+
+
+            <li><span>Settings</span></li>
+                <ul class="innerList">
+                        <% if (!user) { %>
+                            <li><a href="/login"><i class="fa-solid fa-right-to-bracket me-2"></i>>Log In</a></li>
+                            <li><a  href="/"><i class="fa-solid fa-right-to-bracket me-2"></i>Back to Home</a></li> 
+                        <% } else { %>
+                            <li><a  href="/logout"> <i class="fa-solid fa-right-to-bracket me-2"></i>Logout</a></li> 
+                            <li><a  href="/"><i class="fa-solid fa-right-to-bracket me-2"></i>Back to Home</a></li> 	
+                        <% } %>
+                </ul>
+        </ul>
+    </div>
+
+        <div class="main-content">
+        <main>
+            <div class="form  rounded-4 px-3 mt-3 shadow ">
+            <form action="/add" method="post" autocomplete="off" >
+
+                <!--embedding js in html with ejs tags-->
+                    <% if (errors && errors.length){ %>
+                            <% errors.forEach(error => { %>
+                                <p class="alert alert-danger py-1 mt-3"> <%= error %></p>
+                        <%   })}; %>
+
+              <fieldset>
+                    <h3 style="text-align:center" class="my-3">Add Products</h3>
+
+                    <label for="productname" class="form-label">Product name</label>
+                    <input type="text" id="productname" name="productname"  class="form-control"  required/>
+
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" rows="3" class="form-control" required></textarea>
+
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" id="price" name="price" class="form-control"  required/>
+
+                    <label for="image" class="form-label">Image</label>
+                    <input type="text" id="image" name="image"  class="form-control"  required />
+
+                    <button type="submit" class="btn btn-outline-success my-3 d-block mx-auto">Add</button>
+                </fieldset>
+          </form>
+    </div>
+  </main>
+</div>
+</body>
+</html>
