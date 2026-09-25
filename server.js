@@ -520,4 +520,10 @@ app.get("/viewOrders",adminOnly,(req,res)=>{
 })
 // app.listen(3000);
 // for vercel:
+if (require.main === module) {
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Server running on port ${process.env.PORT || 3000}`);
+    });
+}
+
 module.exports = app;
