@@ -4,8 +4,14 @@ require("dotenv").config()
 const express= require("express")
 const app=express()
 
-const db=require("better-sqlite3")("Gemstones.db")
-db.pragma("journal_mode=WAL")
+// const db=require("better-sqlite3")("Gemstones.db")
+// db.pragma("journal_mode=WAL")
+//vercel:
+const db = require("better-sqlite3")("Gemstones.db", {
+    readonly: true,
+    fileMustExist: true
+});
+
 
 const bcrypt=require("bcrypt")
 
@@ -14,77 +20,78 @@ const jwt=require("jsonwebtoken")
 const cookieParser=require("cookie-parser")
 
 //Creating Tables
-const createTables = db.transaction(() => {
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            isAdmin INTEGER DEFAULT 0
-        )
-    `).run();
+// comment out for vercel
+// const createTables = db.transaction(() => {
+//     db.prepare(`
+//         CREATE TABLE IF NOT EXISTS users (
+//             id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             username TEXT NOT NULL UNIQUE,
+//             password TEXT NOT NULL,
+//             isAdmin INTEGER DEFAULT 0
+//         )
+//     `).run();
 
     
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            description TEXT NOT NULL,
-            price REAL NOT NULL,
-            image TEXT NOT NULL
-        )
-    `).run();
+//     db.prepare(`
+//         CREATE TABLE IF NOT EXISTS products (
+//             id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             name TEXT NOT NULL,
+//             description TEXT NOT NULL,
+//             price REAL NOT NULL,
+//             image TEXT NOT NULL
+//         )
+//     `).run();
 
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS cart (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            userid INTEGER NOT NULL,
-            productid INTEGER NOT NULL,
-            quantity INTEGER NOT NULL DEFAULT 1,
-            FOREIGN KEY(userid) REFERENCES users(id),
-            FOREIGN KEY(productid) REFERENCES products(id)
-        )
-    `).run();
+//     db.prepare(`
+//         CREATE TABLE IF NOT EXISTS cart (
+//             id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             userid INTEGER NOT NULL,
+//             productid INTEGER NOT NULL,
+//             quantity INTEGER NOT NULL DEFAULT 1,
+//             FOREIGN KEY(userid) REFERENCES users(id),
+//             FOREIGN KEY(productid) REFERENCES products(id)
+//         )
+//     `).run();
 
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS customerInfo (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            userid INTEGER NOT NULL,
-            fullname TEXT NOT NULL,
-            email TEXT NOT NULL,
-            phone TEXT NOT NULL,
-            address TEXT NOT NULL,
-            city TEXT NOT NULL,
-            zip TEXT NOT NULL,
-            FOREIGN KEY(userid) REFERENCES users(id)
-        )
-    `).run();
+//     db.prepare(`
+//         CREATE TABLE IF NOT EXISTS customerInfo (
+//             id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             userid INTEGER NOT NULL,
+//             fullname TEXT NOT NULL,
+//             email TEXT NOT NULL,
+//             phone TEXT NOT NULL,
+//             address TEXT NOT NULL,
+//             city TEXT NOT NULL,
+//             zip TEXT NOT NULL,
+//             FOREIGN KEY(userid) REFERENCES users(id)
+//         )
+//     `).run();
 
-        db.prepare(`
-        CREATE TABLE IF NOT EXISTS orders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            userid INTEGER NOT NULL,
-            orderDate TEXT NOT NULL DEFAULT (datetime('now')),
-            total REAL NOT NULL,
-            FOREIGN KEY(userid) REFERENCES users(id)
-        )
-    `).run();
+//         db.prepare(`
+//         CREATE TABLE IF NOT EXISTS orders (
+//             id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             userid INTEGER NOT NULL,
+//             orderDate TEXT NOT NULL DEFAULT (datetime('now')),
+//             total REAL NOT NULL,
+//             FOREIGN KEY(userid) REFERENCES users(id)
+//         )
+//     `).run();
 
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS orderItems (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            orderid INTEGER NOT NULL,
-            productid INTEGER NOT NULL,
-            quantity INTEGER NOT NULL,
-            price REAL NOT NULL,
-            FOREIGN KEY(orderid) REFERENCES orders(id),
-            FOREIGN KEY(productid) REFERENCES products(id)
-        )
-    `).run();
+//     db.prepare(`
+//         CREATE TABLE IF NOT EXISTS orderItems (
+//             id INTEGER PRIMARY KEY AUTOINCREMENT,
+//             orderid INTEGER NOT NULL,
+//             productid INTEGER NOT NULL,
+//             quantity INTEGER NOT NULL,
+//             price REAL NOT NULL,
+//             FOREIGN KEY(orderid) REFERENCES orders(id),
+//             FOREIGN KEY(productid) REFERENCES products(id)
+//         )
+//     `).run();
 
-});
+// });
 
-createTables();
+// createTables();
 
 app.set("view engine","ejs")
 
@@ -511,4 +518,6 @@ app.get("/viewOrders",adminOnly,(req,res)=>{
     })
     res.render("viewOrders",{orders,storeOrderItems});
 })
-app.listen(3000)
+// app.listen(3000);
+// for vercel:
+module.exports = app;
