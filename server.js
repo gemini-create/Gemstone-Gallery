@@ -7,10 +7,15 @@ const app=express()
 // const db=require("better-sqlite3")("Gemstones.db")
 // db.pragma("journal_mode=WAL")
 //vercel:
-const db = require("better-sqlite3")("Gemstones.db", {
+const path = require("path");
+
+const dbPath = path.join(__dirname, "Gemstones.db");
+
+const db = require("better-sqlite3")(dbPath, {
     readonly: true,
     fileMustExist: true
 });
+
 
 
 const bcrypt=require("bcrypt")
