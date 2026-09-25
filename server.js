@@ -140,10 +140,26 @@ app.get("/",(req,res)=>{
 })
 
 //SHOP
+// app.get("/shop", (req, res) => {
+//     const products = db.prepare("SELECT * FROM products").all();
+//     res.render("shop", { products }); 
+// });
+
 app.get("/shop", (req, res) => {
-    const products = db.prepare("SELECT * FROM products").all();
-    res.render("shop", { products }); 
+    try {
+        const products = db
+            .prepare("SELECT id, name, description, price, image FROM products")
+            .all();
+
+        console.log("Products:", products.length);
+
+        res.render("shop", { products });
+    } catch (err) {
+        console.error("SHOP ERROR:", err);
+        res.status(500).send("Unable to load products.");
+    }
 });
+
 
 //CART
 app.get("/cart",(req,res)=>{
